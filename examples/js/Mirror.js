@@ -34,7 +34,7 @@ THREE.Mirror = function ( width, height, options ) {
 	var q = new THREE.Vector4();
 
 	var textureMatrix = new THREE.Matrix4();
-    //我们日常生活中的镜子反射出的是透视关系
+    //我们日常生活中的镜子反射出的是透视关系  
 	var mirrorCamera = new THREE.PerspectiveCamera();
 
 	var parameters = {
