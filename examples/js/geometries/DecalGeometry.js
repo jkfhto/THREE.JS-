@@ -152,7 +152,7 @@
 
   		vertex.applyMatrix4( mesh.matrixWorld );//计算模型顶点的世界坐标
   		vertex.applyMatrix4( projectorMatrixInverse );//计算模型顶点在贴花坐标系的坐标
-
+  
   		decalVertices.push( new DecalVertex( vertex.clone(), normal.clone() ) );
 
   	}
