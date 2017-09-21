@@ -34,7 +34,7 @@ THREE.Mirror = function ( width, height, options ) {
 	var q = new THREE.Vector4();
 
 	var textureMatrix = new THREE.Matrix4();
-
+    //我们日常生活中的镜子反射出的是透视关系
 	var mirrorCamera = new THREE.PerspectiveCamera();
 
 	var parameters = {
@@ -43,7 +43,7 @@ THREE.Mirror = function ( width, height, options ) {
 		format: THREE.RGBFormat,
 		stencilBuffer: false
 	};
-
+    //WebGLRenderTarget 对应帧缓存对象，就是屏幕显示的一帧在内存的表示
 	var renderTarget = new THREE.WebGLRenderTarget( textureWidth, textureHeight, parameters );
 
 	if ( ! THREE.Math.isPowerOfTwo( textureWidth ) || ! THREE.Math.isPowerOfTwo( textureHeight ) ) {
