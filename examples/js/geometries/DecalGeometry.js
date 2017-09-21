@@ -134,7 +134,7 @@
   			);
 
   			// transform the vertex back to world space
-        //将顶点数据坐标从贴花坐标系转成世界坐标系的坐标
+        //将顶点数据坐标从贴花坐标系转成世界坐标系的坐标 
   			decalVertex.position.applyMatrix4( projectorMatrix );
 
   			// now create vertex and normal buffer data
@@ -198,7 +198,7 @@
 
   				case 1: {
 
-  					// one vertex lies outside of the plane, perform clipping
+  					// one vertex lies outside of the plane, perform clipping   
 
   					if ( v1Out ) {
 
