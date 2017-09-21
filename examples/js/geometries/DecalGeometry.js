@@ -305,7 +305,7 @@
 
   	}
 
-  	function clip( v0, v1, p, s ) {//计算超出包围盒的点与包围盒的角度坐标
+  	function clip( v0, v1, p, s ) {//计算超出包围盒的点与包围盒的交点坐标
       
   		var d0 = v0.position.dot( p ) - s;
   		var d1 = v1.position.dot( p ) - s;
