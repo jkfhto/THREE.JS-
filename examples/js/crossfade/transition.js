@@ -65,7 +65,7 @@ function Transition ( sceneA, sceneB ) {
 			"vec4 texel2 = texture2D( tDiffuse2, vUv );",
 
 			"if (useTexture==1) {",
-
+                //使用效果图 然后用mix混合两个场景 产生过渡效果
 				"vec4 transitionTexel = texture2D( tMixTexture, vUv );",
 				"float r = mixRatio * (1.0 + threshold * 2.0) - threshold;",
 				"float mixf=clamp((transitionTexel.r - r)*(1.0/threshold), 0.0, 1.0);",
