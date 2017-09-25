@@ -85,7 +85,7 @@ THREE.TessellateModifier.prototype.modify = function ( geometry ) {
 
 					edge = 0;
 
-				} else if ( dbc >= dab && dbc >= dac ) {{//bc边最长 拆分bc边 取bc的中点  将一个三角形分成两个三角形
+				} else if ( dbc >= dab && dbc >= dac ) {//bc边最长 拆分bc边 取bc的中点  将一个三角形分成两个三角形
 
 					var vm = vb.clone();
 					vm.lerp( vc, 0.5 );//计算bc点的中点坐标
@@ -126,7 +126,7 @@ THREE.TessellateModifier.prototype.modify = function ( geometry ) {
 
 					edge = 1;
 
-				} else {{//ac边最长 拆分ac边 取ac的中点  将一个三角形分成两个三角形
+				} else {//ac边最长 拆分ac边 取ac的中点  将一个三角形分成两个三角形
 
 					var vm = va.clone();
 					vm.lerp( vc, 0.5 );//计算ac点的中点坐标
