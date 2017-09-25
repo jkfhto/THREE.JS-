@@ -128,7 +128,7 @@
 			geometry.vertices.push( new THREE.Vector3(), new THREE.Vector3() );
 
 			line = new THREE.Line( geometry, new THREE.LineBasicMaterial( { linewidth: 4 } ) );
-			scene.add( line );
+			scene.add( line );//标记点击位置的白线
 
 			loadLeePerrySmith();
 
@@ -206,9 +206,9 @@
 					n.add( intersects[ 0 ].point );
 
 					intersection.normal.copy( intersects[ 0 ].face.normal );
-					mouseHelper.lookAt( n );
+					mouseHelper.lookAt( n );//设置mouseHelper的方向
 
-					line.geometry.vertices[ 0 ].copy( intersection.point );
+					line.geometry.vertices[ 0 ].copy( intersection.point );//更新line的位置坐标
 					line.geometry.vertices[ 1 ].copy( n );
 					line.geometry.verticesNeedUpdate = true;
 
@@ -259,8 +259,8 @@
 
 		function shoot() {
 
-			position.copy( intersection.point );
-			orientation.copy( mouseHelper.rotation );
+			position.copy( intersection.point );//点击处的位置坐标
+			orientation.copy( mouseHelper.rotation );//点击处的方向向量
 
 			if ( params.rotate ) orientation.z = Math.random() * 2 * Math.PI;
 
