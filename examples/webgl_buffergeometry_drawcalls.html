@@ -229,7 +229,9 @@
 
 					if ( effectController.limitConnections && particleData.numConnections >= effectController.maxConnections )//限制每个点最多连接的直线数
 						continue;
-
+                    if(linesMesh.visible==false){ 
+                        continue;
+                    }
 					// Check collision 计算两点的距离小于minDistance 则将两点数据赋值给linesMesh连接两点
 					for ( var j = i + 1; j < particleCount; j++ ) {//遍历其他的顶点 
 
