@@ -2,8 +2,8 @@
  * @author Slayvin / http://slayvin.net
  */
 
-THREE.Mirror = function ( width, height, options ) {//创建一个关于镜子屏幕对称的相机 使用该相机渲染场景到帧缓存  使用renderTarget.texture作为THREE.Mirror对象的贴图实现镜子效果
-
+THREE.Mirror = function ( width, height, options ) {//创建一个关于镜子平面对称的相机 使用该相机渲染场景到帧缓存  使用renderTarget.texture作为THREE.Mirror对象的贴图实现镜子效果
+ 
 	THREE.Mesh.call( this, new THREE.PlaneBufferGeometry( width, height ) );
 
 	var scope = this;
