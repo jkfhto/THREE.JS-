@@ -2,7 +2,7 @@
  * @author Slayvin / http://slayvin.net
  */
 
-THREE.Mirror = function ( width, height, options ) {
+THREE.Mirror = function ( width, height, options ) {//创建一个关于镜子屏幕对称的相机 使用该相机渲染场景到帧缓存  使用renderTarget.texture作为THREE.Mirror对象的贴图实现镜子效果
 
 	THREE.Mesh.call( this, new THREE.PlaneBufferGeometry( width, height ) );
 
@@ -34,7 +34,7 @@ THREE.Mirror = function ( width, height, options ) {
 	var q = new THREE.Vector4();
 
 	var textureMatrix = new THREE.Matrix4();
-    //我们日常生活中的镜子反射出的是透视关系  
+    //我们日常生活中的镜子反射出的是透视关系
 	var mirrorCamera = new THREE.PerspectiveCamera();
 
 	var parameters = {
