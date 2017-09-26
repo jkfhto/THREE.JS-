@@ -53,21 +53,21 @@
 					vertex.x = Math.random() * 4000 - 2000;
 					vertex.y = Math.random() * 4000 - 2000;
 					vertex.z = Math.random() * 4000 - 2000;
-					geometry.vertices.push( vertex );
+					geometry.vertices.push( vertex );//设置顶点数据
 
-					geometry.colors.push( new THREE.Color( colors[ Math.floor( Math.random() * colors.length ) ] ) );
+					geometry.colors.push( new THREE.Color( colors[ Math.floor( Math.random() * colors.length ) ] ) );//设置顶点颜色
 
 				}
 
-				var material = new THREE.PointsMaterial( { size: 1, vertexColors: THREE. VertexColors, depthTest: false, opacity: 0.5, sizeAttenuation: false, transparent: true } );
+				var material = new THREE.PointsMaterial( { size: 1, vertexColors: THREE. VertexColors, depthTest: false, opacity: 0.5, sizeAttenuation: false, transparent: true } );//vertexColors: THREE. VertexColors  设置顶点颜色才能实现通过顶点颜色线性插值给材质上色
 
 				var mesh = new THREE.Points( geometry, material );
 				scene.add( mesh );
 
-				renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true } );//关键代码
+				renderer = new THREE.WebGLRenderer( { preserveDrawingBuffer: true } );//关键代码 保存绘图缓存区
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
-				renderer.autoClearColor = false;//关键代码
+				renderer.autoClearColor = false;//关键代码 不会自动清除颜色区缓存
 				container.appendChild( renderer.domElement );
 
 				stats = new Stats();
@@ -112,7 +112,7 @@
 			}
 
 			function render() {
-
+                //更改相机位置  重新绘制场景且不清理颜色区缓存 造成每次绘制的效果叠加 实现trails  
 				camera.position.x += ( mouseX - camera.position.x ) * .05;
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
