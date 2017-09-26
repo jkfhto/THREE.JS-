@@ -95,6 +95,7 @@ THREE.Water = function ( renderer, camera, scene, options ) {
 			'void main() {',
 			'	mirrorCoord = modelMatrix * vec4( position, 1.0 );',
 			'	worldPosition = mirrorCoord.xyz;',
+			//Water所在位置乘以纹理矩阵得到纹理坐标
 			'	mirrorCoord = textureMatrix * mirrorCoord;',
 			'	vec4 mvPosition =  modelViewMatrix * vec4( position, 1.0 );',
 			'	gl_Position = projectionMatrix * mvPosition;',
@@ -120,7 +121,7 @@ THREE.Water = function ( renderer, camera, scene, options ) {
 			'varying vec4 mirrorCoord;',
 			'varying vec3 worldPosition;',
 
-			'vec4 getNoise( vec2 uv ) {',
+			'vec4 getNoise( vec2 uv ) {',//噪音函数 用于波浪生成 time控制波浪运动
 			'	vec2 uv0 = ( uv / 103.0 ) + vec2(time / 17.0, time / 29.0);',
 			'	vec2 uv1 = uv / 107.0-vec2( time / -19.0, time / 31.0 );',
 			'	vec2 uv2 = uv / vec2( 8907.0, 9803.0 ) + vec2( time / 101.0, time / 97.0 );',
@@ -131,38 +132,38 @@ THREE.Water = function ( renderer, camera, scene, options ) {
 			'		texture2D( normalSampler, uv3 );',
 			'	return noise * 0.5 - 1.0;',
 			'}',
-
-			'void sunLight( const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse, inout vec3 diffuseColor, inout vec3 specularColor ) {',
-			'	vec3 reflection = normalize( reflect( -sunDirection, surfaceNormal ) );',
-			'	float direction = max( 0.0, dot( eyeDirection, reflection ) );',
-			'	specularColor += pow( direction, shiny ) * sunColor * spec;',
-			'	diffuseColor += max( dot( sunDirection, surfaceNormal ), 0.0 ) * sunColor * diffuse;',
+             //光照
+			'void sunLight( const vec3 surfaceNormal, const vec3 eyeDirection, float shiny, float spec, float diffuse, inout vec3 diffuseColor, inout vec3 specularColor ) {',//inout 表示这个参数即是输入参数也是输出参数。
+			'	vec3 reflection = normalize( reflect( -sunDirection, surfaceNormal ) );',//计算反射向量并且单位化
+			'	float direction = max( 0.0, dot( eyeDirection, reflection ) );',//计算观察方向与反射方向的夹角余弦值 并确保它不是负值
+			'	specularColor += pow( direction, shiny ) * sunColor * spec;',//计算镜面反射光照依据光的方向向量和物体的法向量来决定的，但是它也依赖于观察方向 shiny反光度(Shininess)。一个物体的反光度越高，反射光的能力越强，散射得越少，高光点就会越小
+			'	diffuseColor += max( dot( sunDirection, surfaceNormal ), 0.0 ) * sunColor * diffuse;',//计算漫反射光照 依据光的方向向量和物体的法向量来决定的
 			'}',
 
 			THREE.ShaderChunk[ 'common' ],
 			THREE.ShaderChunk[ 'fog_pars_fragment' ],
 
 			'void main() {',
-			'	vec4 noise = getNoise( worldPosition.xz );',
-			'	vec3 surfaceNormal = normalize( noise.xzy * vec3( 1.5, 1.0, 1.5 ) );',
+			'	vec4 noise = getNoise( worldPosition.xz );',//worldPosition.xz  取值跟Water的父对象的位置有关
+			'	vec3 surfaceNormal = normalize( noise.xzy * vec3( 2., 1.0, 2. ) );',//计算平面法向量
 
-			'	vec3 diffuseLight = vec3(0.0);',
-			'	vec3 specularLight = vec3(0.0);',
+			'	vec3 diffuseLight = vec3(0.0);',//漫反射光源颜色
+			'	vec3 specularLight = vec3(0.0);',//镜面反射光源颜色
 
 			'	vec3 worldToEye = eye-worldPosition;',
-			'	vec3 eyeDirection = normalize( worldToEye );',
+			'	vec3 eyeDirection = normalize( worldToEye );',//计算观察方向
 			'	sunLight( surfaceNormal, eyeDirection, 100.0, 2.0, 0.5, diffuseLight, specularLight );',
 
 			'	float distance = length(worldToEye);',
 
 			'	vec2 distortion = surfaceNormal.xz * ( 0.001 + 1.0 / distance ) * distortionScale;',
-			'	vec3 reflectionSample = vec3( texture2D( mirrorSampler, mirrorCoord.xy / mirrorCoord.z + distortion ) );',
+			'	vec3 reflectionSample = vec3( texture2D( mirrorSampler, mirrorCoord.xy / mirrorCoord.z + distortion ) );',//反射
 
 			'	float theta = max( dot( eyeDirection, surfaceNormal ), 0.0 );',
 			'	float rf0 = 0.3;',
-			'	float reflectance = rf0 + ( 1.0 - rf0 ) * pow( ( 1.0 - theta ), 5.0 );',
+			'	float reflectance = rf0 + ( 1.0 - rf0 ) * pow( ( 1.0 - theta ), 5.0 );',//反射率 反射的能量与入射的能量之比称为该物体的反射比。
 			'	vec3 scatter = max( 0.0, dot( surfaceNormal, eyeDirection ) ) * waterColor;',
-			'	vec3 albedo = mix( sunColor * diffuseLight * 0.3 + scatter, ( vec3( 0.1 ) + reflectionSample * 0.9 + reflectionSample * specularLight ), reflectance );',
+			'	vec3 albedo = mix( sunColor * diffuseLight * 0.3 + scatter, ( vec3( 0.1 ) + reflectionSample * 0.9 + reflectionSample * specularLight ), reflectance );',//反照率
 			'	vec3 outgoingLight = albedo;',
 			'	gl_FragColor = vec4( outgoingLight, alpha );',
 
@@ -219,9 +220,9 @@ THREE.Water.prototype.render = function () {
 
 	this.matrixNeedsUpdate = true;
 
-	// Render the mirrored view of the current scene into the target texture
+	// Render the mirrored view of the current scene into the target texture 
 	var scene = this;
-
+    //Water 添加到场景中 才会渲染到帧缓存
 	while ( scene.parent !== null ) {
 
 		scene = scene.parent;
@@ -241,37 +242,42 @@ THREE.Water.prototype.render = function () {
 };
 
 
-THREE.Water.prototype.updateTextureMatrix = function () {
-
+THREE.Water.prototype.updateTextureMatrix = function () {////创建一个关于THREE.Water平面对称的相机 使用该相机渲染场景到帧缓存  使用renderTarget.texture作为THREE.Mirror对象的贴图实现THREE.Water反射效果
+    //更新世界矩阵，更新Water的位置
 	this.updateMatrixWorld();
+	//更新世界矩阵，更新相机的位置
 	this.camera.updateMatrixWorld();
-
+    //从Water的世界矩阵中获取Water的世界坐标
 	this.mirrorWorldPosition.setFromMatrixPosition( this.matrixWorld );
+	//从camera的世界矩阵中获取camera的世界坐标
 	this.cameraWorldPosition.setFromMatrixPosition( this.camera.matrixWorld );
-
+    //从Water的世界矩阵中获取Water的旋转矩阵
 	this.rotationMatrix.extractRotation( this.matrixWorld );
-
+    //设置Water的法向量
 	this.normal.set( 0, 0, 1 );
+	//通过旋转矩阵更新法向量
 	this.normal.applyMatrix4( this.rotationMatrix );
-
+    //计算摄像机关于镜子屏幕对称的点的坐标
 	var view = this.mirrorWorldPosition.clone().sub( this.cameraWorldPosition );
 	view.reflect( this.normal ).negate();
 	view.add( this.mirrorWorldPosition );
-
+    //从相机的世界矩阵中获取相机的旋转矩阵
 	this.rotationMatrix.extractRotation( this.camera.matrixWorld );
-
+    //对相机的视线方向向量也进行旋转，并且加上相机目前的位置，得到相机目标点的位置
 	this.lookAtPosition.set( 0, 0, - 1 );
 	this.lookAtPosition.applyMatrix4( this.rotationMatrix );
 	this.lookAtPosition.add( this.cameraWorldPosition );
-
+    //计算摄像机目标点指向镜子的向量
 	var target = this.mirrorWorldPosition.clone().sub( this.lookAtPosition );
+	//根据normal计算反射向量然后取反
 	target.reflect( this.normal ).negate();
+	//计算摄像机目标点关于镜子屏幕对称的点的坐标
 	target.add( this.mirrorWorldPosition );
-
+    //计算相机的up 上方向
 	this.up.set( 0, - 1, 0 );
 	this.up.applyMatrix4( this.rotationMatrix );
 	this.up.reflect( this.normal ).negate();
-
+    //设置mirrorCamera相机
 	this.mirrorCamera.position.copy( view );
 	this.mirrorCamera.up = this.up;
 	this.mirrorCamera.lookAt( target );
@@ -315,6 +321,7 @@ THREE.Water.prototype.updateTextureMatrix = function () {
 	projectionMatrix.elements[ 14 ] = c.w;
 
 	var worldCoordinates = new THREE.Vector3();
+	//从camera的世界矩阵中获取camera的世界坐标
 	worldCoordinates.setFromMatrixPosition( this.camera.matrixWorld );
 	this.eye = worldCoordinates;
 	this.material.uniforms.eye.value = this.eye;
