@@ -143,7 +143,7 @@
 					vertexShader: document.getElementById( 'vertexShader' ).textContent,
 					fragmentShader: document.getElementById( 'fragment_shader_screen' ).textContent,
 
-					depthWrite: false
+					depthWrite: false//禁止深度写入  防止背景遮挡scene场景中的球体
 
 				} );
 
@@ -230,7 +230,7 @@
 
 				var time = Date.now() * 0.0015;
 
-				camera.position.x += ( mouseX - camera.position.x ) * .05;
+				camera.position.x += ( mouseX - camera.position.x ) * .05;//.05生成延迟动画
 				camera.position.y += ( - mouseY - camera.position.y ) * .05;
 
 				camera.lookAt( scene.position );
